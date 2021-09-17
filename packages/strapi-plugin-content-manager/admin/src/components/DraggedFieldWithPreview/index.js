@@ -1,12 +1,14 @@
 import React, { forwardRef, useState } from 'react';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
 import DraggedField from '../DraggedField';
 import PreviewCarret from '../PreviewCarret';
 import Carret from './Carret';
 import DynamicZoneWrapper from './DynamicZoneWrapper';
 import Wrapper from './Wrapper';
 import DynamicComponent from './DynamicComponent';
+import { getTrad } from '../../utils';
 
 /* eslint-disable react/no-array-index-key */
 
@@ -18,7 +20,6 @@ const DraggedFieldWithPreview = forwardRef(
       componentLayouts,
       dynamicZoneComponents,
       isDragging,
-      label,
       name,
       onClickEdit,
       onClickRemove,
@@ -45,6 +46,7 @@ const DraggedFieldWithPreview = forwardRef(
     const componentData = get(componentLayouts, [componentUid], {});
     const componentLayout = get(componentData, ['layouts', 'edit'], []);
     const getWrapperWitdh = colNum => `${(1 / 12) * colNum * 100}%`;
+    const { formatMessage } = useIntl();
 
     return (
       <div
@@ -71,7 +73,7 @@ const DraggedFieldWithPreview = forwardRef(
                 componentUid={componentUid}
                 isHidden={isHidden}
                 isOverDynamicZone={isOverDynamicZone}
-                label={label}
+                label={formatMessage({ id: getTrad(name), defaultMessage: name })}
                 name={name}
                 onClick={onClickEdit}
                 onRemove={onClickRemove}
@@ -101,11 +103,11 @@ const DraggedFieldWithPreview = forwardRef(
                             ['attributes', field.name, 'type'],
                             ''
                           );
-                          const label = get(
-                            componentData,
-                            ['metadatas', field.name, 'edit', 'label'],
-                            ''
-                          );
+                          // const label = get(
+                          //   componentData,
+                          //   ['metadatas', field.name, 'edit', 'label'],
+                          //   ''
+                          // );
 
                           return (
                             <div
@@ -116,7 +118,10 @@ const DraggedFieldWithPreview = forwardRef(
                               }}
                             >
                               <DraggedField
-                                label={label}
+                                label={formatMessage({
+                                  id: getTrad(field.name),
+                                  defaultMessage: field.name,
+                                })}
                                 name={field.name}
                                 isSub
                                 withLongerHeight={higherFields.includes(fieldType)}
@@ -160,7 +165,6 @@ DraggedFieldWithPreview.defaultProps = {
   componentUid: null,
   dynamicZoneComponents: [],
   isDragging: false,
-  label: '',
   onClickEdit: () => {},
   onClickRemove: () => {},
   selectedItem: '',
@@ -177,7 +181,6 @@ DraggedFieldWithPreview.propTypes = {
   componentUid: PropTypes.string,
   dynamicZoneComponents: PropTypes.array,
   isDragging: PropTypes.bool,
-  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onClickEdit: PropTypes.func,
   onClickRemove: PropTypes.func,

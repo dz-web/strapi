@@ -3,10 +3,11 @@ import { get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { CircleButton, getFilterType } from 'strapi-helper-plugin';
 import { Select } from '@buffetjs/core';
-
+import { useIntl } from 'react-intl';
 import { InputWrapper, Wrapper } from './components';
 import Input from './Input';
 import Option from './Option';
+import { getTrad } from '../../utils';
 
 const styles = {
   select: {
@@ -32,6 +33,7 @@ function FilterPickerOption({
   showAddButton,
   type,
 }) {
+  const { formatMessage } = useIntl();
   const filtersOptions = getFilterType(type);
   const currentFilterName = get(modifiedData, [index, 'name'], '');
   const currentFilterData = allowedAttributes.find(attr => attr.name === currentFilterName);
@@ -50,7 +52,10 @@ function FilterPickerOption({
           }}
           name={`${index}.name`}
           value={currentFilterName}
-          options={allowedAttributes.map(attr => attr.name)}
+          options={allowedAttributes.map(attr => ({
+            value: attr.name,
+            label: formatMessage({ id: getTrad(attr.name), defaultMessage: attr.name }),
+          }))}
           style={styles.select}
         />
         <Select

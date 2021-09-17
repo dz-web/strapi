@@ -13,6 +13,10 @@ const dateFormats = {
   //  datetime: 'dddd, MMMM Do YYYY HH:mm',
   // time: 'HH:mm A',
   // timestamp: 'dddd, MMMM Do YYYY HH:mm',
+  date: 'YYYY-MM-DD',
+  datetime: 'YYYY-MM-DD HH:mm',
+  time: 'HH:mm A',
+  timestamp: 'YYYY-MM-DD HH:mm',
 };
 
 export default dateFormats;

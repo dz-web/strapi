@@ -9,6 +9,7 @@ import {
   useGlobalContext,
 } from 'strapi-helper-plugin';
 import { Padded } from '@buffetjs/core';
+import { useIntl } from 'react-intl';
 import pluginId from '../../pluginId';
 import pluginPermissions from '../../permissions';
 import Container from '../../components/Container';
@@ -17,7 +18,7 @@ import FormWrapper from '../../components/FormWrapper';
 import FieldComponent from '../../components/FieldComponent';
 import Inputs from '../../components/Inputs';
 import SelectWrapper from '../../components/SelectWrapper';
-import { getInjectedComponents } from '../../utils';
+import { getInjectedComponents, getTrad } from '../../utils';
 import CollectionTypeFormWrapper from '../CollectionTypeFormWrapper';
 import EditViewDataManagerProvider from '../EditViewDataManagerProvider';
 import SingleTypeFormWrapper from '../SingleTypeFormWrapper';
@@ -39,7 +40,7 @@ const EditView = ({
   userPermissions,
 }) => {
   const { currentEnvironment, plugins } = useGlobalContext();
-
+  const { formatMessage } = useIntl();
   const {
     createActionAllowedFields,
     readActionAllowedFields,
@@ -152,7 +153,15 @@ const EditView = ({
                           return (
                             <div className="row" key={fieldsBlockIndex}>
                               {fieldsBlock.map(
-                                ({ name, size, fieldSchema, labelIcon, metadatas }, fieldIndex) => {
+                                (
+                                  { name, size, fieldSchema, labelIcon, metadatas: mts },
+                                  fieldIndex
+                                ) => {
+                                  const label = formatMessage({
+                                    id: getTrad(name),
+                                    defaultMessage: name,
+                                  });
+                                  const metadatas = { ...mts, label };
                                   const isComponent = fieldSchema.type === 'component';
 
                                   if (isComponent) {
@@ -165,7 +174,10 @@ const EditView = ({
                                         componentUid={component}
                                         labelIcon={labelIcon}
                                         isRepeatable={repeatable}
-                                        label={metadatas.label}
+                                        label={formatMessage({
+                                          id: getTrad(name),
+                                          defaultMessage: name,
+                                        })}
                                         max={max}
                                         min={min}
                                         name={name}

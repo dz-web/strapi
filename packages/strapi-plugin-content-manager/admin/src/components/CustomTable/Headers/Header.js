@@ -1,12 +1,15 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Carret, useGlobalContext } from 'strapi-helper-plugin';
+import { useIntl } from 'react-intl';
 import { useListView } from '../../../hooks';
+import { getTrad } from '../../../utils';
 
-const Header = ({ fieldSchema: { type }, metadatas: { label, sortable, mainField }, name }) => {
+const Header = ({ fieldSchema: { type }, metadatas: { sortable, mainField }, name }) => {
   const { _sort, firstSortableHeader, setQuery } = useListView();
   const { emitEvent } = useGlobalContext();
   const [sortBy, sortOrder] = _sort.split(':');
+  const { formatMessage } = useIntl();
 
   let sortField = name;
   let useRelation = false;
@@ -37,7 +40,7 @@ const Header = ({ fieldSchema: { type }, metadatas: { label, sortable, mainField
   return (
     <th onClick={handleClick}>
       <span className={sortable ? 'sortable' : ''}>
-        {label}
+        {formatMessage({ id: getTrad(name), defaultMessage: name })}
         {sortBy === sortField && <Carret fill="#212529" isUp={sortOrder === 'ASC' && 'isAsc'} />}
       </span>
     </th>
